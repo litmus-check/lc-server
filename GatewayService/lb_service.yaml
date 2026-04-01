@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ws-gateway-lb
+  namespace: test-runners
+spec:
+  type: LoadBalancer
+  selector:
+    app: ws-gateway
+  ports:
+    - name: websocket
+      port: 8080          # external port
+      targetPort: 8080    # pod port
+      protocol: TCP
+  externalTrafficPolicy: Cluster

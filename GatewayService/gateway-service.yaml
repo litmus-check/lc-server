@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-gateway
+  namespace: test-runners   # <-- change this to your new namespace
+  labels:
+    app: ws-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws-gateway
+  template:
+    metadata:
+      labels:
+        app: ws-gateway
+    spec:
+      serviceAccountName: ws-gateway
+      nodeSelector:
+        agentpool: uatnodepool
+      containers:
+      - name: gateway
+        image: litmuscheckuat.azurecr.io/gateway-image-uat:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

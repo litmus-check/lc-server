@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  litmus-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - ./logs:/app/logs
+      - ./traces:/app/traces
+      - ./screenshots:/app/screenshots
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --stop-writes-on-bgsave-error no
+    user: "1000:1000"  # Use a non-root user
+
+volumes:
+  redis-data:
