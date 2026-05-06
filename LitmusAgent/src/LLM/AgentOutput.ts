@@ -71,7 +71,7 @@ export class AgentOutput {
         const validatedData = AgentOutputSchema.parse(data || {});
         
         // Set properties from validated data
-        this.Actions = validatedData.Actions || [];
+        this.Actions = (validatedData.Actions || []) as BaseAction[];
         this.Reasoning = validatedData.Reasoning || '';
         this.Warning = validatedData.Warning || '';
         this.ParsingError = validatedData.ParsingError || false;

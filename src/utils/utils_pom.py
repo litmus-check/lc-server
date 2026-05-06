@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import traceback
 from log_config.logger import logger
 from models.Element import Element
