@@ -24,6 +24,14 @@ from database import db
 import os
 load_dotenv(find_dotenv("app.env"))
 
+def _parse_docker_ts(ts: str) -> datetime:
+    """Parse a Docker ISO timestamp, handling nanosecond precision (up to 6 fractional digits)."""
+    ts = ts.rstrip('Z')
+    if '.' in ts:
+        dot = ts.index('.')
+        ts = ts[:dot + 7]  # truncate to microseconds
+    return datetime.fromisoformat(ts).replace(tzinfo=timezone.utc)
+
 test_runner = TestRunner()
 class DockerManager:
     """
@@ -81,7 +89,7 @@ class DockerManager:
                     
                     if container.attrs["State"]["Status"] == "running":
                         # Check if container has been running longer than timeout
-                        start_time = datetime.fromisoformat(container.attrs["State"]["StartedAt"][:-1]).replace(tzinfo=timezone.utc)
+                        start_time = _parse_docker_ts(container.attrs["State"]["StartedAt"])
                         current_time = datetime.now(timezone.utc)
                         
                         if current_time - start_time > timedelta(seconds=BROWSERBASE_SESSION_TIMEOUT + 30):
@@ -132,7 +140,7 @@ class DockerManager:
                         # clear_entry_from_redis(run_id)
 
                         # get the end time from the container
-                        end_time = datetime.fromisoformat(container.attrs["State"]["FinishedAt"][:-1]).replace(tzinfo=timezone.utc)
+                        end_time = _parse_docker_ts(container.attrs["State"]["FinishedAt"])
 
                             
                         from app import app

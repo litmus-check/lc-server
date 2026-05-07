@@ -37,7 +37,7 @@ def create_app():
     logger.info("Connecting to database")
     _app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     _app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    _app.config['SQLALCHEMY_ECHO'] = True
+    _app.config['SQLALCHEMY_ECHO'] = False
     _app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         "pool_pre_ping": True,
         "pool_recycle": 300,
