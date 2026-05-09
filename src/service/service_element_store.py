@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from database import db
 from models.ElementStore import ElementStore
 from models.Element import Element
