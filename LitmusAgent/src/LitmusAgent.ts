@@ -631,11 +631,12 @@ export class LitmusAgent {
                 while (!this.state.isStopped) {
                     // Fetch compose session from Redis
                     const composeSession = await this.containerCommsService.get(this.config.runId);
-                    
+
                     if (!composeSession) {
-                       
-                        logger.error('No compose session found in Redis, returning from agent');
-                        return;
+                        // Race condition on startup: container may poll Redis before the server finishes
+                        // add_compose_session_to_redis. Retry after a short delay instead of exiting.
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        continue;
                     }
 
                     // Check if the goal is added to the compose session

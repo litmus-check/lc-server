@@ -62,7 +62,8 @@ def update_activity_log(current_user: dict, log_id: str=None, reference_id: str=
                 activity_log = ActivityLog.query.filter_by(log_id=log_id).first()
             
             if not activity_log:
-                raise Exception(f"Activity log with log_id {log_id} not found")
+                logger.warning(f"Activity log with log_id {log_id} not found, skipping update")
+                return
             
             # Get the old executed_seconds and ai_credits
             executed_seconds_old = activity_log.executed_seconds
