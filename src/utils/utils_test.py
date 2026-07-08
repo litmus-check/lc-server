@@ -124,7 +124,7 @@ def check_ai_credits_for_test(current_user: dict, instructions: list) -> tuple[d
 
 # Initialize the model
 llm = AzureChatOpenAI(
-    model=os.getenv('AZURE_OPENAI_MODEL', "gpt-4o"),
+    model=os.getenv('AZURE_OPENAI_MODEL', "gpt-5.5"),
     api_version='2024-10-21',
     azure_endpoint=os.getenv('AZURE_OPENAI_ENDPOINT', ''),
     api_key=os.getenv('AZURE_OPENAI_KEY', ''),
