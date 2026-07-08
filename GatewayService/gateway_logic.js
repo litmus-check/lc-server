@@ -13,7 +13,7 @@ console.log('Loaded Kubernetes config from cluster (using service account)');
 const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 
 const NAMESPACE = process.env.NAMESPACE;
-const AUTH_API_URL = process.env.AUTH_API_URL || 'https://uatocrdemo.finigami.com/v1/user';
+const AUTH_API_URL = process.env.AUTH_API_URL;
 const PORT = '8080';
 
 if (!NAMESPACE || !AUTH_API_URL || !PORT) {

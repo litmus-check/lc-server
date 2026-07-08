@@ -201,3 +201,6 @@ logs/
 **/.DS_Store
 node_modules
 test_data/
+
+# TypeScript incremental build cache
+*.tsbuildinfo

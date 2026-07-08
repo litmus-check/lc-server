@@ -17,8 +17,9 @@ load_dotenv(find_dotenv("app.env"))
 # Environment configuration
 environment = os.getenv('ENVIRONMENT', DEFAULT_ENV)
 
-# Whitelisted domains for email sending (only in non-PROD environments)
-WHITELISTED_DOMAINS = ['litmuscheck.com', 'finigami.com']
+# Whitelisted domains for email sending in non-PROD environments (comma-separated env var).
+# Leave unset to disable the whitelist and allow all recipient domains.
+WHITELISTED_DOMAINS = [d.strip() for d in os.getenv('EMAIL_WHITELISTED_DOMAINS', '').split(',') if d.strip()]
 
 def validate_email_format(email: str) -> bool:
     """
@@ -195,8 +196,9 @@ def send_email_impl(recipients, subject, body, sender_email, sender_name, bcc_em
         if bcc_emails:
             data["bcc"] = [{"email": email} for email in bcc_emails if validate_email_format(email)]
 
-        # Whitelist check - only allow emails to litmuscheck.com or finigami.com in non-PROD environments
-        if environment != "prod":
+        # Whitelist check - in non-PROD environments, restrict recipients to the configured
+        # domains (EMAIL_WHITELISTED_DOMAINS). Skipped entirely when no whitelist is configured.
+        if environment != "prod" and WHITELISTED_DOMAINS:
             # Check if any recipient domain is not whitelisted
             non_whitelisted_domains = []
             for email in valid_recipients:
@@ -261,14 +263,14 @@ def send_notification_email(org_id, suite_id, subject, body, override_emails=Non
             return False
         
         # Get sender configuration from environment variables
-        sender_email = os.getenv('SENDER_EMAIL', 'mehul@finigamilabs.com')
-        sender_name = os.getenv('SENDER_NAME', 'Mehul')
+        sender_email = os.getenv('SENDER_EMAIL', 'noreply@example.com')
+        sender_name = os.getenv('SENDER_NAME', 'Litmus Check')
         
         # BCC email configuration - only include BCC in non-production environments
         logger.info(f"Current environment: {environment}")
         bcc_emails = None
         if environment != "prod":
-            bcc_emails = os.getenv('BCC_EMAILS', 'nishanth@finigami.com').split(',') if os.getenv('BCC_EMAILS') else ['nishanth@finigami.com']
+            bcc_emails = os.getenv('BCC_EMAILS').split(',') if os.getenv('BCC_EMAILS') else []
             logger.info(f"BCC enabled for non-prod environment: {bcc_emails}")
             logger.info(f"Emails will be sent in {environment} environment")
         else:
@@ -541,7 +543,7 @@ def suite_completion_email(org_id, suite_id, suite_name, test_results, failed_te
         subject = f"{status_emoji} {status_text}: {suite_name} (Env: {env_display}) ({passed} Pass, {failed} Fail, {errors} Error)"
         
         # Create professional email body using the build_email_html function
-        logo_url = "https://testaifinigami.blob.core.windows.net/test-ai-results/litmuscheck_images/litmus-logo-light.png"
+        logo_url = os.getenv('EMAIL_LOGO_URL', '')
         body = build_email_html(
             suite_name=suite_name,
             results=test_results,

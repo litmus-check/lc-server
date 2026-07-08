@@ -8,10 +8,17 @@ import os
 
 # Generate a key using PBKDF2
 def _get_key():
-    # Get salt and password from environment variables
-    salt = os.getenv('ENCRYPTION_SALT', 'qualium_salt').encode()
-    password = os.getenv('ENCRYPTION_PASSWORD', 'qualium_password').encode()
-    
+    # Get salt and password from environment variables (both required — no defaults,
+    # so a misconfigured deployment can never fall back to publicly-known key material).
+    salt_value = os.getenv('ENCRYPTION_SALT')
+    password_value = os.getenv('ENCRYPTION_PASSWORD')
+    if not salt_value or not password_value:
+        raise RuntimeError(
+            "ENCRYPTION_SALT and ENCRYPTION_PASSWORD must be set in the environment"
+        )
+    salt = salt_value.encode()
+    password = password_value.encode()
+
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,

@@ -42,13 +42,12 @@ def send_message_to_slack(message: str, obj: dict, type: str, send_to_integratio
         # logger.info(f"Type: {type}")
 
         # Org-specific webhook integrations are removed in OSS mode.
-
-        # Slack webhook URL is Finigami org integration URL.
+        # The Slack webhook URL is read from the SLACK_WEBHOOK_URL environment variable.
         if not slack_webhook_url:
             logger.error("SLACK_WEBHOOK_URL not set in environment variables")
             return
-        
-        # Add org_id to slack messages. This org_id is sent only to Finigami org integration URL.
+
+        # Add org_id to slack messages.
         org_id = get_org_id_from_suite_id(obj['suite_id'])
         message['blocks'].append({
             "type": "context",
@@ -516,7 +515,7 @@ def send_triage_findings_message(suite_run_id: str, triage_results: list, suite_
             logger.error("SLACK_WEBHOOK_URL not set in environment variables")
             return
         
-        # Add org_id to slack messages. This org_id is sent only to Finigami org integration URL.
+        # Add org_id to slack messages.
         org_id = get_org_id_from_suite_id(suite_obj['suite_id'])
         message['blocks'].append({
             "type": "context",

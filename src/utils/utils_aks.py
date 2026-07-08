@@ -33,7 +33,7 @@ except Exception:
 load_dotenv(find_dotenv("app.env"))
 
 # Environment variables
-AZURE_CONTAINER_REGISTRY_URL = os.getenv("AZURE_CONTAINER_REGISTRY_URL", "litmuscheckuat.azurecr.io/")
+AZURE_CONTAINER_REGISTRY_URL = os.getenv("AZURE_CONTAINER_REGISTRY_URL", "")
 KUBERNETES_NAMESPACE = os.getenv("KUBERNETES_NAMESPACE", "test-runners")
 AZURE_PVC_NAME = os.getenv("AZURE_PVC_NAME", "azurefile-pvc")
 LOGS_VOLUME_NAME = os.getenv("LOGS_VOLUME_NAME", "logs-volume")
