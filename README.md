@@ -26,7 +26,7 @@ Install python-dotenv:
 pip install python-dotenv
 ```
 
-Install plyawright browsers:
+Install playwright browsers:
 ```
 pip install playwright
 playwright install
@@ -35,10 +35,13 @@ playwright install-deps
 ## Turn on Redis container (local)
 
 ## Build Docker image
+```
 cd LitmusAgent
 docker build -t litmus-test-runner .
+```
 
 ## Run Python Flask app
+```
 cd src
 python app.py
-
+```
