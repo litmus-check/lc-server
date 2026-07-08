@@ -16,11 +16,11 @@ spec:
         app: ws-gateway
     spec:
       serviceAccountName: ws-gateway
-      nodeSelector:
-        agentpool: uatnodepool
+      # nodeSelector:              # <-- optional: pin the gateway to a specific node pool
+      #   agentpool: <your-node-pool>
       containers:
       - name: gateway
-        image: litmuscheckuat.azurecr.io/gateway-image-uat:latest
+        image: your-registry.example.com/gateway-image:latest   # <-- change to your container registry
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

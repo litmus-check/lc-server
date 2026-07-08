@@ -87,10 +87,9 @@ def compose_session_creation_helper(current_user: dict, compose_id: str, activit
         logger.info(f"[{compose_id}] Using browser type: {browser_type}")
         
         # Kill any active compose sessions for the user before starting a new one.
-        # This applies to both browserbase and litmus_cloud — for litmus_cloud specifically,
-        # all containers bind host port 8080, so a stale container will block a new one from starting.
-        is_litmuscheck_user = current_user.get('email','').endswith('@litmuscheck.com') or current_user.get('email','').endswith('@finigami.com')
-        if not is_litmuscheck_user:
+        # Only relevant when using Browserbase; litmus_cloud containers are cleaned up
+        # separately (they bind host port 8080, so a stale container blocks a new one).
+        if browser_type == BROWSERBASE_ENV:
             try:
                 kill_active_browserbase_sessions(current_user)
             except Exception as e:
